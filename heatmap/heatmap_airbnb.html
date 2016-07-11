@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Heatmaps</title>
+  <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  #map {
+    height: 100%;
+  }
+  #floating-panel {
+    position: absolute;
+    top: 10px;
+    left: 25%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    font-family: 'Roboto','sans-serif';
+    line-height: 30px;
+    padding-left: 10px;
+  }
+  #floating-panel {
+    background-color: #fff;
+    border: 1px solid #999;
+    left: 25%;
+    padding: 5px;
+    position: absolute;
+    top: 10px;
+    z-index: 5;
+  }
+  </style>
+</head>
+
+<body>
+  <!--<div id="floating-panel">
+    <button onclick="toggleHeatmap()">Toggle Heatmap</button>
+    <button onclick="changeGradient()">Change gradient</button>
+    <button onclick="changeRadius()">Change radius</button>
+    <button onclick="changeOpacity()">Change opacity</button>
+  </div>-->
+  <div id="map"></div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" type="text/javascript"></script>
+  <script>
+
+      // This example requires the Visualization library. Include the libraries=visualization
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
+
+      var map, heatmap , doc;
+
+      function initMap() {
+        $.ajax({
+          url: 'geodatairbnb.json',
+          async: false,
+          dataType: 'json',
+          success: function (response) {
+                doc = response
+              }
+            });
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center: {lat: 41.8711077, lng: -87.6649717},
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data: getPoints(),
+          map: map,
+          dissipating: true,
+          maxIntensity: 12,
+          radius: 2,
+          opacity: 0.9,
+          //dissipating: false
+        });
+      }
+
+      function toggleHeatmap() {
+        heatmap.setMap(heatmap.getMap() ? null : map);
+      }
+
+      function changeGradient() {
+        var gradient = [
+        'rgba(50, 255, 240, 1)',
+        'rgba(50, 255, 255, 1)',
+        'rgba(50, 191, 255, 1)',
+        'rgba(50, 127, 255, 1)',
+        'rgba(50, 63, 255, 1)',
+        'rgba(50, 50, 255, 1)',
+        'rgba(50, 100, 223, 1)',
+        'rgba(50, 120, 191, 1)',
+        'rgba(40, 140, 159, 1)',
+        'rgba(30, 180, 127, 1)',
+        'rgba(63, 190, 91, 1)',
+        'rgba(127, 230, 63, 1)',
+        'rgba(191, 240, 31, 1)',
+        'rgba(255, 250, 0, 1)'
+        ]
+        heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+      }
+
+      function changeRadius() {
+        heatmap.set('radius', heatmap.get('radius') ? null : 20);
+      }
+
+      function changeOpacity() {
+        heatmap.set('opacity', heatmap.get('opacity') ? null : 0.4);
+      }
+
+      // Heatmap data: 500 Points
+      function getPoints() {
+        //var obj = JSON.parse(doc);
+        arreglo = []
+        for(var i=0;i<doc.length;i++){
+          var obj = doc[i];
+          arreglo.push(new google.maps.LatLng(obj[1], obj[2]));
+        
+        }
+        doc = null;
+        return arreglo;
+        //return [
+        //new google.maps.LatLng(doc[0][1], doc[0][2]),
+        //new google.maps.LatLng(doc[1][1], doc[1][2]),
+        //];
+      }
+      </script>
+      <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnpILQR4rWufhDB-mvKDEOTJ1IsCT_oHo&libraries=visualization&callback=initMap">
+      </script>
+
+    </body>
+    </html>
