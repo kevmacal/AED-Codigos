@@ -2,11 +2,12 @@ import pandas as pd
 import gc
 import math
 from pandas import Series,DataFrame
+
 data = pd.read_csv("current.csv") #dataset original
 del data['latitud'] 
 del data['longitud']
-del data['tipo'] 
-del data['lugar']
+#del data['tipo'] 
+#del data['lugar']
 del data['direccion']
 del data['fecha'] 
 termslist = {}
@@ -14,7 +15,12 @@ termslist = {}
 #data = data.head(1000)
 #print next(data.iterrows())[1]
 for i, row in data.iterrows():
-	linea = row['descripcion']
+	linea = str(row['descripcion']) + ' ' + str(row['lugar']) + ' ' + str(row['tipo'])
+	linea = linea.replace("/", " ")
+	linea = linea.replace(".", " ")
+	linea = linea.replace("(", " ")
+	linea = linea.replace(")", " ")
+	linea = linea.replace(":", " ")
 	tokens = linea.split()
 	for word in tokens:
 		if word in termslist:
@@ -27,7 +33,12 @@ tf[:].fillna(0, inplace=True)
 print "INICIALIZO TF"
 fila = 0
 for i, row in data.iterrows():
-	linea = row['descripcion']
+	linea = str(row['descripcion']) + ' ' + str(row['lugar']) + ' ' + str(row['tipo'])
+	linea = linea.replace("/", " ")
+	linea = linea.replace(".", " ")
+	linea = linea.replace("(", " ")
+	linea = linea.replace(")", " ")
+	linea = linea.replace(":", " ")
 	tokens = linea.split()
 	for word in tokens:
 		if pd.isnull(tf.ix[fila,word]) == True:
